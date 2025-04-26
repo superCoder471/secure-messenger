@@ -124,39 +124,39 @@
             <div class="section">
                 <h2>Entity 1 - Key Management</h2>
                 <div class="key-management">
-                    <button onclick="generateKeys('entity1')">Generate Keys</button>
-                    <button onclick="exportPrivateKey('entity1')">Export Private Key</button>
-                    <button onclick="exportPublicKey('entity1')">Export Public Key</button>
-                    <button onclick="importPrivateKey('entity1')">Import Private Key</button>
-                    <button onclick="importPublicKey('entity1')">Import Public Key</button>
-                    <button onclick="getPublicKey('entity1')">Show Public Key</button>
+                    <button id="entity1-generateKeys">Generate Keys</button>
+                    <button id="entity1-exportPrivateKey">Export Private Key</button>
+                    <button id="entity1-exportPublicKey">Export Public Key</button>
+                    <button id="entity1-importPrivateKey">Import Private Key</button>
+                    <button id="entity1-importPublicKey">Import Public Key</button>
+                    <button id="entity1-getPublicKey">Show Public Key</button>
                 </div>
                 <div id="entity1-public-key-container" style="display: none;">
                     <h3>Your Public Key</h3>
                     <textarea id="entity1-public-key" readonly></textarea>
-                    <button onclick="copyToClipboard('entity1-public-key')">Copy to Clipboard</button>
+                    <button id="entity1-copyToClipboard-publicKey">Copy to Clipboard</button>
                 </div>
                 
                 <h3>Enter Friend's Public Key (Entity 2)</h3>
                 <textarea id="entity2-public-key-input" placeholder="Paste Entity 2's public key here"></textarea>
-                <button onclick="savePeerPublicKey('entity1')">Save Friend's Public Key</button>
+                <button id="entity1-savePeerPublicKey">Save Friend's Public Key</button>
             </div>
             
             <div class="section">
                 <h2>Encrypt Message</h2>
                 <textarea id="entity1-message-to-encrypt" placeholder="Type your message here"></textarea>
-                <button onclick="encryptMessage('entity1')">Encrypt</button>
+                <button id="entity1-encryptMessage">Encrypt</button>
                 <div id="entity1-ciphertext-container" style="display: none;">
                     <h3>Encrypted Message</h3>
                     <textarea id="entity1-ciphertext" readonly></textarea>
-                    <button onclick="copyToClipboard('entity1-ciphertext')">Copy to Clipboard</button>
+                    <button id="entity1-copyToClipboard-ciphertext">Copy to Clipboard</button>
                 </div>
             </div>
             
             <div class="section">
                 <h2>Decrypt Message</h2>
                 <textarea id="entity1-ciphertext-input" placeholder="Paste encrypted message here"></textarea>
-                <button onclick="decryptMessage('entity1')">Decrypt</button>
+                <button id="entity1-decryptMessage">Decrypt</button>
                 <div id="entity1-decrypted-container" style="display: none;">
                     <h3>Decrypted Message</h3>
                     <textarea id="entity1-decrypted-message" readonly></textarea>
@@ -168,10 +168,10 @@
                 <div class="key-management">
                     <label for="entity1-file-to-encrypt" class="file-input-label">Select File to Encrypt</label>
                     <input type="file" id="entity1-file-to-encrypt" class="file-input">
-                    <button onclick="encryptFile('entity1')">Encrypt File</button>
+                <button id="entity1-encryptFile">Encrypt File</button>
                     <label for="entity1-file-to-decrypt" class="file-input-label">Select File to Decrypt</label>
                     <input type="file" id="entity1-file-to-decrypt" class="file-input">
-                    <button onclick="decryptFile('entity1')">Decrypt File</button>
+                <button id="entity1-decryptFile">Decrypt File</button>
                 </div>
                 <div id="entity1-file-status"></div>
             </div>
@@ -181,39 +181,39 @@
             <div class="section">
                 <h2>Entity 2 - Key Management</h2>
                 <div class="key-management">
-                    <button onclick="generateKeys('entity2')">Generate Keys</button>
-                    <button onclick="exportPrivateKey('entity2')">Export Private Key</button>
-                    <button onclick="exportPublicKey('entity2')">Export Public Key</button>
-                    <button onclick="importPrivateKey('entity2')">Import Private Key</button>
-                    <button onclick="importPublicKey('entity2')">Import Public Key</button>
-                    <button onclick="getPublicKey('entity2')">Show Public Key</button>
+                    <button id="entity2-generateKeys">Generate Keys</button>
+                    <button id="entity2-exportPrivateKey">Export Private Key</button>
+                    <button id="entity2-exportPublicKey">Export Public Key</button>
+                    <button id="entity2-importPrivateKey">Import Private Key</button>
+                    <button id="entity2-importPublicKey">Import Public Key</button>
+                    <button id="entity2-getPublicKey">Show Public Key</button>
                 </div>
                 <div id="entity2-public-key-container" style="display: none;">
                     <h3>Your Public Key</h3>
                     <textarea id="entity2-public-key" readonly></textarea>
-                    <button onclick="copyToClipboard('entity2-public-key')">Copy to Clipboard</button>
+                    <button id="entity2-copyToClipboard-publicKey">Copy to Clipboard</button>
                 </div>
                 
                 <h3>Enter Friend's Public Key (Entity 1)</h3>
                 <textarea id="entity1-public-key-input" placeholder="Paste Entity 1's public key here"></textarea>
-                <button onclick="savePeerPublicKey('entity2')">Save Friend's Public Key</button>
+                <button id="entity2-savePeerPublicKey">Save Friend's Public Key</button>
             </div>
             
             <div class="section">
                 <h2>Encrypt Message</h2>
                 <textarea id="entity2-message-to-encrypt" placeholder="Type your message here"></textarea>
-                <button onclick="encryptMessage('entity2')">Encrypt</button>
+                <button id="entity2-encryptMessage">Encrypt</button>
                 <div id="entity2-ciphertext-container" style="display: none;">
                     <h3>Encrypted Message</h3>
                     <textarea id="entity2-ciphertext" readonly></textarea>
-                    <button onclick="copyToClipboard('entity2-ciphertext')">Copy to Clipboard</button>
+                    <button id="entity2-copyToClipboard-ciphertext">Copy to Clipboard</button>
                 </div>
             </div>
             
             <div class="section">
                 <h2>Decrypt Message</h2>
                 <textarea id="entity2-ciphertext-input" placeholder="Paste encrypted message here"></textarea>
-                <button onclick="decryptMessage('entity2')">Decrypt</button>
+                <button id="entity2-decryptMessage">Decrypt</button>
                 <div id="entity2-decrypted-container" style="display: none;">
                     <h3>Decrypted Message</h3>
                     <textarea id="entity2-decrypted-message" readonly></textarea>
@@ -225,10 +225,10 @@
                 <div class="key-management">
                     <label for="entity2-file-to-encrypt" class="file-input-label">Select File to Encrypt</label>
                     <input type="file" id="entity2-file-to-encrypt" class="file-input">
-                    <button onclick="encryptFile('entity2')">Encrypt File</button>
+                <button id="entity2-encryptFile">Encrypt File</button>
                     <label for="entity2-file-to-decrypt" class="file-input-label">Select File to Decrypt</label>
                     <input type="file" id="entity2-file-to-decrypt" class="file-input">
-                    <button onclick="decryptFile('entity2')">Decrypt File</button>
+                <button id="entity2-decryptFile">Decrypt File</button>
                 </div>
                 <div id="entity2-file-status"></div>
             </div>
@@ -638,31 +638,37 @@
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('button').forEach(button => {
-                const onclick = button.getAttribute('onclick');
-                if (onclick) {
-                    const action = onclick.match(/^(\w+)/)[1];
-                    if (action === 'switchTab') return;
-                    
-                    button.addEventListener('click', async function() {
-                        button.disabled = true;
-                        const originalText = button.textContent;
-                        button.textContent = 'Processing...';
-                        
-                        try {
-                            const fn = window[onclick.split('(')[0]];
-                            if (typeof fn === 'function') {
-                                await fn.apply(this, onclick.match(/\(([^)]+)\)/)[1].split(',').map(arg => {
-                                    return arg.trim().replace(/'/g, '');
-                                }));
-                            }
-                        } finally {
-                            button.disabled = false;
-                            button.textContent = originalText;
-                        }
-                    });
-                }
-            });
+            // Remove inline onclick usage and add event listeners by button IDs
+            
+            // Entity 1 buttons
+            document.getElementById('entity1-generateKeys').addEventListener('click', () => generateKeys('entity1'));
+            document.getElementById('entity1-exportPrivateKey').addEventListener('click', () => exportPrivateKey('entity1'));
+            document.getElementById('entity1-exportPublicKey').addEventListener('click', () => exportPublicKey('entity1'));
+            document.getElementById('entity1-importPrivateKey').addEventListener('click', () => importPrivateKey('entity1'));
+            document.getElementById('entity1-importPublicKey').addEventListener('click', () => importPublicKey('entity1'));
+            document.getElementById('entity1-getPublicKey').addEventListener('click', () => getPublicKey('entity1'));
+            document.getElementById('entity1-copyToClipboard-publicKey').addEventListener('click', () => copyToClipboard('entity1-public-key'));
+            document.getElementById('entity1-savePeerPublicKey').addEventListener('click', () => savePeerPublicKey('entity1'));
+            document.getElementById('entity1-encryptMessage').addEventListener('click', () => encryptMessage('entity1'));
+            document.getElementById('entity1-copyToClipboard-ciphertext').addEventListener('click', () => copyToClipboard('entity1-ciphertext'));
+            document.getElementById('entity1-decryptMessage').addEventListener('click', () => decryptMessage('entity1'));
+            document.getElementById('entity1-encryptFile').addEventListener('click', () => encryptFile('entity1'));
+            document.getElementById('entity1-decryptFile').addEventListener('click', () => decryptFile('entity1'));
+            
+            // Entity 2 buttons
+            document.getElementById('entity2-generateKeys').addEventListener('click', () => generateKeys('entity2'));
+            document.getElementById('entity2-exportPrivateKey').addEventListener('click', () => exportPrivateKey('entity2'));
+            document.getElementById('entity2-exportPublicKey').addEventListener('click', () => exportPublicKey('entity2'));
+            document.getElementById('entity2-importPrivateKey').addEventListener('click', () => importPrivateKey('entity2'));
+            document.getElementById('entity2-importPublicKey').addEventListener('click', () => importPublicKey('entity2'));
+            document.getElementById('entity2-getPublicKey').addEventListener('click', () => getPublicKey('entity2'));
+            document.getElementById('entity2-copyToClipboard-publicKey').addEventListener('click', () => copyToClipboard('entity2-public-key'));
+            document.getElementById('entity2-savePeerPublicKey').addEventListener('click', () => savePeerPublicKey('entity2'));
+            document.getElementById('entity2-encryptMessage').addEventListener('click', () => encryptMessage('entity2'));
+            document.getElementById('entity2-copyToClipboard-ciphertext').addEventListener('click', () => copyToClipboard('entity2-ciphertext'));
+            document.getElementById('entity2-decryptMessage').addEventListener('click', () => decryptMessage('entity2'));
+            document.getElementById('entity2-encryptFile').addEventListener('click', () => encryptFile('entity2'));
+            document.getElementById('entity2-decryptFile').addEventListener('click', () => decryptFile('entity2'));
             
             // Set up file input change handlers
             document.querySelectorAll('.file-input').forEach(input => {
