@@ -7,12 +7,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --section-bg-color: #f9f9f9;
+            --border-color: #ddd;
+            --button-bg-color: #4CAF50;
+            --button-hover-bg-color: #45a049;
+            --success-bg-color: #dff0d8;
+            --success-text-color: #3c763d;
+            --error-bg-color: #f2dede;
+            --error-text-color: #a94442;
+        }
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .container {
             display: flex;
@@ -20,32 +35,38 @@
             gap: 20px;
         }
         .section {
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             padding: 15px;
             border-radius: 5px;
-            background-color: #f9f9f9;
+            background-color: var(--section-bg-color);
+            transition: background-color 0.3s ease;
         }
         h2 {
             margin-top: 0;
-            color: #333;
+            color: var(--text-color);
         }
         textarea {
             width: 100%;
             min-height: 100px;
             padding: 8px;
             box-sizing: border-box;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         button {
             padding: 8px 16px;
-            background-color: #4CAF50;
+            background-color: var(--button-bg-color);
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             margin: 5px 0;
+            transition: background-color 0.3s ease;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: var(--button-hover-bg-color);
         }
         .status {
             margin-top: 10px;
@@ -53,12 +74,12 @@
             border-radius: 4px;
         }
         .success {
-            background-color: #dff0d8;
-            color: #3c763d;
+            background-color: var(--success-bg-color);
+            color: var(--success-text-color);
         }
         .error {
-            background-color: #f2dede;
-            color: #a94442;
+            background-color: var(--error-bg-color);
+            color: var(--error-text-color);
         }
         .tabs {
             display: flex;
@@ -67,14 +88,16 @@
         .tab {
             padding: 10px 20px;
             cursor: pointer;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
+            background-color: var(--section-bg-color);
+            border: 1px solid var(--border-color);
             border-bottom: none;
             border-radius: 5px 5px 0 0;
             margin-right: 5px;
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .tab.active {
-            background-color: #4CAF50;
+            background-color: var(--button-bg-color);
             color: white;
         }
         .tab-content {
@@ -99,15 +122,49 @@
         .file-input-label {
             display: inline-block;
             padding: 8px 16px;
-            background-color: #4CAF50;
+            background-color: var(--button-bg-color);
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             margin: 5px 0;
+            transition: background-color 0.3s ease;
         }
         .file-input-label:hover {
-            background-color: #45a049;
+            background-color: var(--button-hover-bg-color);
+        }
+        /* Dark mode styles */
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --section-bg-color: #1e1e1e;
+            --border-color: #333333;
+            --button-bg-color: #bb86fc;
+            --button-hover-bg-color: #9a67ea;
+            --success-bg-color: #2e7d32;
+            --success-text-color: #a5d6a7;
+            --error-bg-color: #b00020;
+            --error-text-color: #ff8a80;
+        }
+        /* Toggle button styles */
+        #mode-toggle {
+            /* Remove fixed positioning */
+            position: static;
+            display: block;
+            margin: 40px auto 20px auto;
+            padding: 10px 20px;
+            background-color: var(--button-bg-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: background-color 0.3s ease;
+            z-index: auto;
+            transform: none;
+        }
+        #mode-toggle:hover {
+            background-color: var(--button-hover-bg-color);
         }
     </style>
 </head>
@@ -685,6 +742,42 @@
                 });
             });
         });
+        // Existing script content above...
+
+        // Light/Dark mode toggle script
+        function applyMode(mode) {
+            if (mode === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('mode-toggle').textContent = 'Switch to Light Mode';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('mode-toggle').textContent = 'Switch to Dark Mode';
+            }
+        }
+
+        function toggleMode() {
+            const isDark = document.body.classList.contains('dark-mode');
+            if (isDark) {
+                applyMode('light');
+                localStorage.setItem('mode', 'light');
+            } else {
+                applyMode('dark');
+                localStorage.setItem('mode', 'dark');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Existing DOMContentLoaded code...
+
+            // Add event listener for mode toggle button
+            const modeToggleBtn = document.getElementById('mode-toggle');
+            modeToggleBtn.addEventListener('click', toggleMode);
+
+            // Apply saved mode or default to light
+            const savedMode = localStorage.getItem('mode') || 'dark';
+            applyMode(savedMode);
+        });
     </script>
+    <button id="mode-toggle" aria-label="Toggle light and dark mode">Switch to Light Mode</button>
 </body>
 </html>
