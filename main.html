@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Messenger</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .key-management {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .key-management button {
+            flex: 1;
+            min-width: 150px;
+        }
+        .file-input {
+            display: none;
+        }
+        .file-input-label {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        .file-input-label:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Secure Messenger</h1>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('entity1')">Entity 1 (You)</div>
+        <div class="tab" onclick="switchTab('entity2')">Entity 2 (Friend)</div>
+    </div>
+    
+    <div class="container">
+        <div id="entity1-tab" class="tab-content active">
+            <div class="section">
+                <h2>Entity 1 - Key Management</h2>
+                <div class="key-management">
+                    <button onclick="generateKeys('entity1')">Generate Keys</button>
+                    <button onclick="exportPrivateKey('entity1')">Export Private Key</button>
+                    <button onclick="exportPublicKey('entity1')">Export Public Key</button>
+                    <button onclick="importPrivateKey('entity1')">Import Private Key</button>
+                    <button onclick="importPublicKey('entity1')">Import Public Key</button>
+                    <button onclick="getPublicKey('entity1')">Show Public Key</button>
+                </div>
+                <div id="entity1-public-key-container" style="display: none;">
+                    <h3>Your Public Key</h3>
+                    <textarea id="entity1-public-key" readonly></textarea>
+                    <button onclick="copyToClipboard('entity1-public-key')">Copy to Clipboard</button>
+                </div>
+                
+                <h3>Enter Friend's Public Key (Entity 2)</h3>
+                <textarea id="entity2-public-key-input" placeholder="Paste Entity 2's public key here"></textarea>
+                <button onclick="savePeerPublicKey('entity1')">Save Friend's Public Key</button>
+            </div>
+            
+            <div class="section">
+                <h2>Encrypt Message</h2>
+                <textarea id="entity1-message-to-encrypt" placeholder="Type your message here"></textarea>
+                <button onclick="encryptMessage('entity1')">Encrypt</button>
+                <div id="entity1-ciphertext-container" style="display: none;">
+                    <h3>Encrypted Message</h3>
+                    <textarea id="entity1-ciphertext" readonly></textarea>
+                    <button onclick="copyToClipboard('entity1-ciphertext')">Copy to Clipboard</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Decrypt Message</h2>
+                <textarea id="entity1-ciphertext-input" placeholder="Paste encrypted message here"></textarea>
+                <button onclick="decryptMessage('entity1')">Decrypt</button>
+                <div id="entity1-decrypted-container" style="display: none;">
+                    <h3>Decrypted Message</h3>
+                    <textarea id="entity1-decrypted-message" readonly></textarea>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>File Encryption/Decryption</h2>
+                <div class="key-management">
+                    <label for="entity1-file-to-encrypt" class="file-input-label">Select File to Encrypt</label>
+                    <input type="file" id="entity1-file-to-encrypt" class="file-input">
+                    <button onclick="encryptFile('entity1')">Encrypt File</button>
+                    <label for="entity1-file-to-decrypt" class="file-input-label">Select File to Decrypt</label>
+                    <input type="file" id="entity1-file-to-decrypt" class="file-input">
+                    <button onclick="decryptFile('entity1')">Decrypt File</button>
+                </div>
+                <div id="entity1-file-status"></div>
+            </div>
+        </div>
+        
+        <div id="entity2-tab" class="tab-content">
+            <div class="section">
+                <h2>Entity 2 - Key Management</h2>
+                <div class="key-management">
+                    <button onclick="generateKeys('entity2')">Generate Keys</button>
+                    <button onclick="exportPrivateKey('entity2')">Export Private Key</button>
+                    <button onclick="exportPublicKey('entity2')">Export Public Key</button>
+                    <button onclick="importPrivateKey('entity2')">Import Private Key</button>
+                    <button onclick="importPublicKey('entity2')">Import Public Key</button>
+                    <button onclick="getPublicKey('entity2')">Show Public Key</button>
+                </div>
+                <div id="entity2-public-key-container" style="display: none;">
+                    <h3>Your Public Key</h3>
+                    <textarea id="entity2-public-key" readonly></textarea>
+                    <button onclick="copyToClipboard('entity2-public-key')">Copy to Clipboard</button>
+                </div>
+                
+                <h3>Enter Friend's Public Key (Entity 1)</h3>
+                <textarea id="entity1-public-key-input" placeholder="Paste Entity 1's public key here"></textarea>
+                <button onclick="savePeerPublicKey('entity2')">Save Friend's Public Key</button>
+            </div>
+            
+            <div class="section">
+                <h2>Encrypt Message</h2>
+                <textarea id="entity2-message-to-encrypt" placeholder="Type your message here"></textarea>
+                <button onclick="encryptMessage('entity2')">Encrypt</button>
+                <div id="entity2-ciphertext-container" style="display: none;">
+                    <h3>Encrypted Message</h3>
+                    <textarea id="entity2-ciphertext" readonly></textarea>
+                    <button onclick="copyToClipboard('entity2-ciphertext')">Copy to Clipboard</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Decrypt Message</h2>
+                <textarea id="entity2-ciphertext-input" placeholder="Paste encrypted message here"></textarea>
+                <button onclick="decryptMessage('entity2')">Decrypt</button>
+                <div id="entity2-decrypted-container" style="display: none;">
+                    <h3>Decrypted Message</h3>
+                    <textarea id="entity2-decrypted-message" readonly></textarea>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>File Encryption/Decryption</h2>
+                <div class="key-management">
+                    <label for="entity2-file-to-encrypt" class="file-input-label">Select File to Encrypt</label>
+                    <input type="file" id="entity2-file-to-encrypt" class="file-input">
+                    <button onclick="encryptFile('entity2')">Encrypt File</button>
+                    <label for="entity2-file-to-decrypt" class="file-input-label">Select File to Decrypt</label>
+                    <input type="file" id="entity2-file-to-decrypt" class="file-input">
+                    <button onclick="decryptFile('entity2')">Decrypt File</button>
+                </div>
+                <div id="entity2-file-status"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="status-message" class="status" style="display: none;"></div>
+    
+    <script>
+        const DEBUG_MODE = true;
+        let currentUser = 'entity1';
+        
+        // Storage for keys
+        const entities = {
+            entity1: {
+                privateKey: null,
+                publicKey: null,
+                peerPublicKey: null
+            },
+            entity2: {
+                privateKey: null,
+                publicKey: null,
+                peerPublicKey: null
+            }
+        };
+        
+        function logDebug(message, data = null) {
+            if (DEBUG_MODE) {
+                console.debug(`[DEBUG] ${message}`, data || '');
+            }
+        }
+        
+        function switchTab(entity) {
+            currentUser = entity;
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(`${entity}-tab`).classList.add('active');
+            document.querySelector(`.tab[onclick="switchTab('${entity}')"]`).classList.add('active');
+        }
+        
+        function showStatus(message, isError = false) {
+            const statusDiv = document.getElementById('status-message');
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'status error' : 'status success';
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showFileStatus(entity, message, isError = false) {
+            const statusDiv = document.getElementById(`${entity}-file-status`);
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'status error' : 'status success';
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand('copy');
+            showStatus('Copied to clipboard!');
+        }
+        
+        function generateKeys(entity) {
+            try {
+                const crypt = new JSEncrypt({default_key_size: 2048});
+                crypt.getKey();
+                
+                entities[entity].privateKey = crypt.getPrivateKey();
+                entities[entity].publicKey = crypt.getPublicKey();
+                
+                showStatus(`${entity} keys generated successfully`);
+            } catch (error) {
+                showStatus(`Error generating keys: ${error.message}`, true);
+            }
+        }
+        
+        function exportPrivateKey(entity) {
+            if (!entities[entity].privateKey) {
+                showStatus(`No private key found for ${entity}`, true);
+                return;
+            }
+            
+            try {
+                const blob = new Blob([entities[entity].privateKey], {type: 'text/plain'});
+                saveAs(blob, `${entity}_private.pem`);
+                showStatus(`${entity} private key exported`);
+            } catch (error) {
+                showStatus(`Error exporting private key: ${error.message}`, true);
+            }
+        }
+        
+        function exportPublicKey(entity) {
+            if (!entities[entity].publicKey) {
+                showStatus(`No public key found for ${entity}`, true);
+                return;
+            }
+            
+            try {
+                const blob = new Blob([entities[entity].publicKey], {type: 'text/plain'});
+                saveAs(blob, `${entity}_public.pem`);
+                showStatus(`${entity} public key exported`);
+            } catch (error) {
+                showStatus(`Error exporting public key: ${error.message}`, true);
+            }
+        }
+        
+        function importPrivateKey(entity) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.pem';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const key = event.target.result;
+                        // Validate it's a private key
+                        if (!key.includes('BEGIN PRIVATE KEY') && !key.includes('BEGIN RSA PRIVATE KEY')) {
+                            throw new Error('File does not contain a valid private key');
+                        }
+                        
+                        // Test the key
+                        const crypt = new JSEncrypt();
+                        crypt.setPrivateKey(key);
+                        if (!crypt.getKey()) {
+                            throw new Error('Invalid private key format');
+                        }
+                        
+                        entities[entity].privateKey = key;
+                        entities[entity].publicKey = crypt.getPublicKey();
+                        showStatus(`${entity} private key imported successfully`);
+                    } catch (error) {
+                        showStatus(`Error importing private key: ${error.message}`, true);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        function importPublicKey(entity) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.pem';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const key = event.target.result;
+                        // Validate it's a public key
+                        if (!key.includes('BEGIN PUBLIC KEY')) {
+                            throw new Error('File does not contain a valid public key');
+                        }
+                        
+                        // Test the key
+                        const crypt = new JSEncrypt();
+                        crypt.setPublicKey(key);
+                        if (!crypt.getKey()) {
+                            throw new Error('Invalid public key format');
+                        }
+                        
+                        entities[entity].publicKey = key;
+                        showStatus(`${entity} public key imported successfully`);
+                    } catch (error) {
+                        showStatus(`Error importing public key: ${error.message}`, true);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        function getPublicKey(entity) {
+            if (!entities[entity].publicKey) {
+                showStatus(`No public key found for ${entity}. Generate keys first.`, true);
+                return;
+            }
+            
+            try {
+                const container = document.getElementById(`${entity}-public-key-container`);
+                const textarea = document.getElementById(`${entity}-public-key`);
+                textarea.value = entities[entity].publicKey;
+                container.style.display = 'block';
+                showStatus(`${entity} public key retrieved`);
+            } catch (error) {
+                showStatus(`Error getting public key: ${error.message}`, true);
+            }
+        }
+        
+        function savePeerPublicKey(entity) {
+            const peerEntity = entity === 'entity1' ? 'entity2' : 'entity1';
+            const input = document.getElementById(`${peerEntity}-public-key-input`).value.trim();
+            
+            if (!input) {
+                showStatus('Please enter the public key', true);
+                return;
+            }
+            
+            try {
+                // Validate the public key
+                const crypt = new JSEncrypt();
+                crypt.setPublicKey(input);
+                if (!crypt.getKey()) {
+                    throw new Error('Invalid public key format');
+                }
+                
+                entities[entity].peerPublicKey = input;
+                showStatus(`${peerEntity} public key saved successfully`);
+            } catch (error) {
+                showStatus(`Error saving public key: ${error.message}`, true);
+            }
+        }
+        
+        function encryptMessage(entity) {
+            const message = document.getElementById(`${entity}-message-to-encrypt`).value.trim();
+            
+            if (!message) {
+                showStatus('Please enter a message to encrypt', true);
+                return;
+            }
+            
+            if (!entities[entity].peerPublicKey) {
+                showStatus(`No peer public key found for ${entity}. Save friend's public key first.`, true);
+                return;
+            }
+            
+            try {
+                const crypt = new JSEncrypt();
+                crypt.setPublicKey(entities[entity].peerPublicKey);
+                const ciphertext = crypt.encrypt(message);
+                
+                if (!ciphertext) {
+                    throw new Error('Encryption failed - message might be too long');
+                }
+                
+                const container = document.getElementById(`${entity}-ciphertext-container`);
+                const textarea = document.getElementById(`${entity}-ciphertext`);
+                textarea.value = ciphertext;
+                container.style.display = 'block';
+                showStatus('Message encrypted successfully');
+            } catch (error) {
+                showStatus(`Error encrypting message: ${error.message}`, true);
+            }
+        }
+        
+        function decryptMessage(entity) {
+            const ciphertext = document.getElementById(`${entity}-ciphertext-input`).value.trim();
+            
+            if (!ciphertext) {
+                showStatus('Please enter an encrypted message', true);
+                return;
+            }
+            
+            if (!entities[entity].privateKey) {
+                showStatus(`No private key found for ${entity}. Generate or import keys first.`, true);
+                return;
+            }
+            
+            try {
+                const crypt = new JSEncrypt();
+                crypt.setPrivateKey(entities[entity].privateKey);
+                const plaintext = crypt.decrypt(ciphertext);
+                
+                if (!plaintext) {
+                    throw new Error('Decryption failed - invalid ciphertext or key mismatch');
+                }
+                
+                const container = document.getElementById(`${entity}-decrypted-container`);
+                const textarea = document.getElementById(`${entity}-decrypted-message`);
+                textarea.value = plaintext;
+                container.style.display = 'block';
+                showStatus('Message decrypted successfully');
+            } catch (error) {
+                showStatus(`Error decrypting message: ${error.message}`, true);
+            }
+        }
+        
+        function encryptFile(entity) {
+            const fileInput = document.getElementById(`${entity}-file-to-encrypt`);
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showFileStatus(entity, 'Please select a file to encrypt', true);
+                return;
+            }
+            
+            if (!entities[entity].peerPublicKey) {
+                showFileStatus(entity, `No peer public key found for ${entity}. Save friend's public key first.`, true);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const crypt = new JSEncrypt();
+                    crypt.setPublicKey(entities[entity].peerPublicKey);
+                    
+                    // Read file as ArrayBuffer
+                    const arrayBuffer = event.target.result;
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    
+                    // Convert to base64 for encryption
+                    const binaryString = Array.from(uint8Array).map(byte => 
+                        String.fromCharCode(byte)).join('');
+                    const base64Data = btoa(binaryString);
+                    
+                    // Encrypt the base64 data
+                    const encrypted = crypt.encrypt(base64Data);
+                    
+                    if (!encrypted) {
+                        throw new Error('Encryption failed - file might be too large');
+                    }
+                    
+                    // Save the encrypted file
+                    const blob = new Blob([encrypted], {type: 'application/octet-stream'});
+                    saveAs(blob, file.name + '.encrypted');
+                    
+                    showFileStatus(entity, 'File encrypted successfully');
+                } catch (error) {
+                    showFileStatus(entity, `Error encrypting file: ${error.message}`, true);
+                }
+            };
+            
+            reader.onerror = function() {
+                showFileStatus(entity, 'Error reading file', true);
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function decryptFile(entity) {
+            const fileInput = document.getElementById(`${entity}-file-to-decrypt`);
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showFileStatus(entity, 'Please select a file to decrypt', true);
+                return;
+            }
+            
+            if (!entities[entity].privateKey) {
+                showFileStatus(entity, `No private key found for ${entity}. Generate or import keys first.`, true);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const crypt = new JSEncrypt();
+                    crypt.setPrivateKey(entities[entity].privateKey);
+                    
+                    // Read encrypted content
+                    const encrypted = event.target.result;
+                    
+                    // Decrypt the content
+                    const decryptedBase64 = crypt.decrypt(encrypted);
+                    
+                    if (!decryptedBase64) {
+                        throw new Error('Decryption failed - invalid file or key mismatch');
+                    }
+                    
+                    // Convert base64 back to binary
+                    const binaryString = atob(decryptedBase64);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    
+                    // Determine original filename (remove .encrypted if present)
+                    let originalName = file.name;
+                    if (originalName.endsWith('.encrypted')) {
+                        originalName = originalName.slice(0, -9);
+                    }
+                    
+                    // Save the decrypted file
+                    const blob = new Blob([bytes], {type: 'application/octet-stream'});
+                    saveAs(blob, originalName);
+                    
+                    showFileStatus(entity, 'File decrypted successfully');
+                } catch (error) {
+                    showFileStatus(entity, `Error decrypting file: ${error.message}`, true);
+                }
+            };
+            
+            reader.onerror = function() {
+                showFileStatus(entity, 'Error reading file', true);
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('button').forEach(button => {
+                const onclick = button.getAttribute('onclick');
+                if (onclick) {
+                    const action = onclick.match(/^(\w+)/)[1];
+                    if (action === 'switchTab') return;
+                    
+                    button.addEventListener('click', async function() {
+                        button.disabled = true;
+                        const originalText = button.textContent;
+                        button.textContent = 'Processing...';
+                        
+                        try {
+                            const fn = window[onclick.split('(')[0]];
+                            if (typeof fn === 'function') {
+                                await fn.apply(this, onclick.match(/\(([^)]+)\)/)[1].split(',').map(arg => {
+                                    return arg.trim().replace(/'/g, '');
+                                }));
+                            }
+                        } finally {
+                            button.disabled = false;
+                            button.textContent = originalText;
+                        }
+                    });
+                }
+            });
+            
+            // Set up file input change handlers
+            document.querySelectorAll('.file-input').forEach(input => {
+                const entity = input.id.split('-')[0];
+                const action = input.id.includes('encrypt') ? 'Encrypt' : 'Decrypt';
+                
+                input.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const label = this.previousElementSibling;
+                        if (label && label.classList.contains('file-input-label')) {
+                            label.textContent = `File selected: ${this.files[0].name}`;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
