@@ -69,9 +69,25 @@
             background-color: var(--button-hover-bg-color);
         }
         .status {
-            margin-top: 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            margin: 0;
             padding: 10px;
-            border-radius: 4px;
+            border-radius: 0 0 4px 4px;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px 20px 20px; /* Added top padding to avoid content hidden behind fixed status */
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .success {
             background-color: var(--success-bg-color);
@@ -174,6 +190,7 @@
     <div class="tabs">
         <div class="tab active" onclick="switchTab('entity1')">Entity 1 (You)</div>
         <div class="tab" onclick="switchTab('entity2')">Entity 2 (Friend)</div>
+        <div class="tab" onclick="switchTab('test')">Test</div>
     </div>
     
     <div class="container">
@@ -289,6 +306,12 @@
                 <button id="entity2-decryptFile">Decrypt File</button>
                 </div>
                 <div id="entity2-file-status"></div>
+            </div>
+        </div>
+        <div id="test-tab" class="tab-content">
+            <div class="section">
+                <h2>Test Page</h2>
+                <button id="test-generateKeys">Generate Keys for Test</button>
             </div>
         </div>
     </div>
@@ -518,7 +541,18 @@
             }
         }
         
-        function encryptMessage(entity) {
+const MAX_RSA_MESSAGE_LENGTH = 190; // Approximate max length for 2048-bit RSA with padding
+const ENCRYPTION_CHUNK_DELIMITER = ':::';
+
+function splitIntoChunks(str, chunkSize) {
+    const chunks = [];
+    for (let i = 0; i < str.length; i += chunkSize) {
+        chunks.push(str.substring(i, i + chunkSize));
+    }
+    return chunks;
+}
+
+function encryptMessage(entity) {
             const message = document.getElementById(`${entity}-message-to-encrypt`).value.trim();
             
             if (!message) {
@@ -534,11 +568,17 @@
             try {
                 const crypt = new JSEncrypt();
                 crypt.setPublicKey(entities[entity].peerPublicKey);
-                const ciphertext = crypt.encrypt(message);
                 
-                if (!ciphertext) {
-                    throw new Error('Encryption failed - message might be too long');
-                }
+                const chunks = splitIntoChunks(message, MAX_RSA_MESSAGE_LENGTH);
+                const encryptedChunks = chunks.map(chunk => {
+                    const encrypted = crypt.encrypt(chunk);
+                    if (!encrypted) {
+                        throw new Error('Encryption failed for a chunk - message might be too long');
+                    }
+                    return encrypted;
+                });
+                
+                const ciphertext = encryptedChunks.join(ENCRYPTION_CHUNK_DELIMITER);
                 
                 const container = document.getElementById(`${entity}-ciphertext-container`);
                 const textarea = document.getElementById(`${entity}-ciphertext`);
@@ -550,7 +590,7 @@
             }
         }
         
-        function decryptMessage(entity) {
+function decryptMessage(entity) {
             const ciphertext = document.getElementById(`${entity}-ciphertext-input`).value.trim();
             
             if (!ciphertext) {
@@ -566,11 +606,17 @@
             try {
                 const crypt = new JSEncrypt();
                 crypt.setPrivateKey(entities[entity].privateKey);
-                const plaintext = crypt.decrypt(ciphertext);
                 
-                if (!plaintext) {
-                    throw new Error('Decryption failed - invalid ciphertext or key mismatch');
-                }
+                const encryptedChunks = ciphertext.split(ENCRYPTION_CHUNK_DELIMITER);
+                const decryptedChunks = encryptedChunks.map(chunk => {
+                    const decrypted = crypt.decrypt(chunk);
+                    if (!decrypted) {
+                        throw new Error('Decryption failed for a chunk - invalid ciphertext or key mismatch');
+                    }
+                    return decrypted;
+                });
+                
+                const plaintext = decryptedChunks.join('');
                 
                 const container = document.getElementById(`${entity}-decrypted-container`);
                 const textarea = document.getElementById(`${entity}-decrypted-message`);
@@ -741,6 +787,16 @@
                         }
                     }
                 });
+            });
+
+            // Test tab button
+            document.getElementById('test-generateKeys').addEventListener('click', () => {
+                generateKeys('entity1');
+                generateKeys('entity2');
+                // Assign peer public keys for testing
+                entities.entity1.peerPublicKey = entities.entity2.publicKey;
+                entities.entity2.peerPublicKey = entities.entity1.publicKey;
+                showStatus('Keys generated and assigned for both entities in Test tab');
             });
         });
         // Existing script content above...
