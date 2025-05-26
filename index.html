@@ -221,6 +221,7 @@
                 <h2>Encrypt Message</h2>
                 <textarea id="entity1-message-to-encrypt" placeholder="Type your message here"></textarea>
                 <button id="entity1-encryptMessage">Encrypt</button>
+                <button id="entity1-clearMessageInput">Clear</button>
                 <div id="entity1-ciphertext-container" style="display: none;">
                     <h3>Encrypted Message</h3>
                     <textarea id="entity1-ciphertext" readonly></textarea>
@@ -232,6 +233,7 @@
                 <h2>Decrypt Message</h2>
                 <textarea id="entity1-ciphertext-input" placeholder="Paste encrypted message here"></textarea>
                 <button id="entity1-decryptMessage">Decrypt</button>
+                <button id="entity1-clearCiphertextInput">Clear</button>
                 <div id="entity1-decrypted-container" style="display: none;">
                     <h3>Decrypted Message</h3>
                     <textarea id="entity1-decrypted-message" readonly></textarea>
@@ -278,6 +280,7 @@
                 <h2>Encrypt Message</h2>
                 <textarea id="entity2-message-to-encrypt" placeholder="Type your message here"></textarea>
                 <button id="entity2-encryptMessage">Encrypt</button>
+                <button id="entity2-clearMessageInput">Clear</button>
                 <div id="entity2-ciphertext-container" style="display: none;">
                     <h3>Encrypted Message</h3>
                     <textarea id="entity2-ciphertext" readonly></textarea>
@@ -289,6 +292,7 @@
                 <h2>Decrypt Message</h2>
                 <textarea id="entity2-ciphertext-input" placeholder="Paste encrypted message here"></textarea>
                 <button id="entity2-decryptMessage">Decrypt</button>
+                <button id="entity2-clearCiphertextInput">Clear</button>
                 <div id="entity2-decrypted-container" style="display: none;">
                     <h3>Decrypted Message</h3>
                     <textarea id="entity2-decrypted-message" readonly></textarea>
@@ -758,6 +762,12 @@ function decryptMessage(entity) {
             document.getElementById('entity1-decryptMessage').addEventListener('click', () => decryptMessage('entity1'));
             document.getElementById('entity1-encryptFile').addEventListener('click', () => encryptFile('entity1'));
             document.getElementById('entity1-decryptFile').addEventListener('click', () => decryptFile('entity1'));
+            document.getElementById('entity1-clearMessageInput').addEventListener('click', () => {
+                document.getElementById('entity1-message-to-encrypt').value = '';
+            });
+            document.getElementById('entity1-clearCiphertextInput').addEventListener('click', () => {
+                document.getElementById('entity1-ciphertext-input').value = '';
+            });
             
             // Entity 2 buttons
             document.getElementById('entity2-generateKeys').addEventListener('click', () => generateKeys('entity2'));
@@ -773,6 +783,12 @@ function decryptMessage(entity) {
             document.getElementById('entity2-decryptMessage').addEventListener('click', () => decryptMessage('entity2'));
             document.getElementById('entity2-encryptFile').addEventListener('click', () => encryptFile('entity2'));
             document.getElementById('entity2-decryptFile').addEventListener('click', () => decryptFile('entity2'));
+            document.getElementById('entity2-clearMessageInput').addEventListener('click', () => {
+                document.getElementById('entity2-message-to-encrypt').value = '';
+            });
+            document.getElementById('entity2-clearCiphertextInput').addEventListener('click', () => {
+                document.getElementById('entity2-ciphertext-input').value = '';
+            });
             
             // Set up file input change handlers
             document.querySelectorAll('.file-input').forEach(input => {
