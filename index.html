@@ -6,7 +6,7 @@
     <title>Secure Messenger</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <style>
+        <style>
         :root {
             --bg-color: #ffffff;
             --text-color: #333333;
@@ -221,6 +221,7 @@
                 <h2>Encrypt Message</h2>
                 <textarea id="entity1-message-to-encrypt" placeholder="Type your message here"></textarea>
                 <button id="entity1-encryptMessage">Encrypt</button>
+                <button id="entity1-clearEncrypt" class="copy-style-button">Clear</button>
                 <div id="entity1-ciphertext-container" style="display: none;">
                     <h3>Encrypted Message</h3>
                     <textarea id="entity1-ciphertext" readonly></textarea>
@@ -232,6 +233,7 @@
                 <h2>Decrypt Message</h2>
                 <textarea id="entity1-ciphertext-input" placeholder="Paste encrypted message here"></textarea>
                 <button id="entity1-decryptMessage">Decrypt</button>
+                <button id="entity1-clearDecrypt" class="copy-style-button">Clear</button>
                 <div id="entity1-decrypted-container" style="display: none;">
                     <h3>Decrypted Message</h3>
                     <textarea id="entity1-decrypted-message" readonly></textarea>
@@ -278,6 +280,7 @@
                 <h2>Encrypt Message</h2>
                 <textarea id="entity2-message-to-encrypt" placeholder="Type your message here"></textarea>
                 <button id="entity2-encryptMessage">Encrypt</button>
+                <button id="entity2-clearEncrypt" class="copy-style-button">Clear</button>
                 <div id="entity2-ciphertext-container" style="display: none;">
                     <h3>Encrypted Message</h3>
                     <textarea id="entity2-ciphertext" readonly></textarea>
@@ -289,6 +292,7 @@
                 <h2>Decrypt Message</h2>
                 <textarea id="entity2-ciphertext-input" placeholder="Paste encrypted message here"></textarea>
                 <button id="entity2-decryptMessage">Decrypt</button>
+                <button id="entity2-clearDecrypt" class="copy-style-button">Clear</button>
                 <div id="entity2-decrypted-container" style="display: none;">
                     <h3>Decrypted Message</h3>
                     <textarea id="entity2-decrypted-message" readonly></textarea>
@@ -829,6 +833,24 @@ function decryptMessage(entity) {
             // Add event listener for mode toggle button
             const modeToggleBtn = document.getElementById('mode-toggle');
             modeToggleBtn.addEventListener('click', toggleMode);
+
+            // Add event listeners for clear buttons
+            document.getElementById('entity1-clearEncrypt').addEventListener('click', () => {
+                document.getElementById('entity1-message-to-encrypt').value = '';
+                document.getElementById('entity1-ciphertext').value = '';
+            });
+            document.getElementById('entity1-clearDecrypt').addEventListener('click', () => {
+                document.getElementById('entity1-ciphertext-input').value = '';
+                document.getElementById('entity1-decrypted-message').value = '';
+            });
+            document.getElementById('entity2-clearEncrypt').addEventListener('click', () => {
+                document.getElementById('entity2-message-to-encrypt').value = '';
+                document.getElementById('entity2-ciphertext').value = '';
+            });
+            document.getElementById('entity2-clearDecrypt').addEventListener('click', () => {
+                document.getElementById('entity2-ciphertext-input').value = '';
+                document.getElementById('entity2-decrypted-message').value = '';
+            });
 
             // Apply saved mode or default to light
             const savedMode = localStorage.getItem('mode') || 'dark';
